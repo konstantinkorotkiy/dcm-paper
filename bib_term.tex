@@ -1,0 +1,506 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[russian, english]{babel}
+\usepackage{amssymb, amsfonts, amsthm, amsmath, mathtext, cite, enumerate, float, amsbsy}
+\usepackage{graphicx}
+\usepackage{bbm}
+\usepackage{rotating}
+%\usepackage{subfigure}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+\usepackage{epstopdf}
+\usepackage{mathtools}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\usepackage{geometry}
+\geometry{verbose,tmargin=2cm,bmargin=3cm,lmargin=2cm,rmargin=2cm}
+\usepackage{wrapfig}
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks = true,
+    linkbordercolor = {red},
+    linkcolor = [rgb]{0.9,0,0.4},
+    anchorcolor = [rgb]{0,0,0},
+    citecolor = [rgb]{0.4,0,0.9},
+    filecolor = [rgb]{0,1,0},
+    menucolor = [rgb]{0.2,0.2,0.2},
+    runcolor = [rgb]{0,0,1},
+    urlcolor = {blue},
+}
+\usepackage[normalem]{ulem}
+\usepackage{fancyhdr}
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\renewcommand{\headrulewidth}{0.005 mm}
+\usepackage{setspace}
+
+\usepackage{sectsty}
+\sectionfont{\large}
+\subsectionfont{\normalsize}
+\usepackage{float}
+\usepackage{indentfirst}
+\onehalfspacing
+\usepackage{fancybox,fancyhdr}
+\usepackage{pdfpages}
+\usepackage{adjustbox}
+\usepackage{makecell}
+\usepackage{geometry}
+\usepackage{cite}
+\usepackage{natbib}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{chngcntr}
+\usepackage{threeparttable}
+\usepackage{booktabs}
+
+\usepackage{scalerel,stackengine}
+\stackMath
+\newcommand\reallywidehat[1]{%
+\savestack{\tmpbox}{\stretchto{%
+  \scaleto{%
+    \scalerel*[\widthof{\ensuremath{#1}}]{\kern-.6pt\bigwedge\kern-.6pt}%
+    {\rule[-\textheight/2]{1ex}{\textheight}}%WIDTH-LIMITED BIG WEDGE
+  }{\textheight}% 
+}{0.5ex}}%
+\stackon[1pt]{#1}{\tmpbox}%
+}
+
+
+\newcommand\norm[1]{\left\lVert#1\right\rVert}
+\DeclareMathOperator{\E}{\mathbb{E}}
+\DeclareMathOperator{\V}{\mathbb{V}}
+
+\usepackage{accents}
+\newcommand{\ubar}[1]{\underaccent{\bar}{#1}}
+\linespread{1.6} 
+
+\usepackage{titlesec}
+\titleformat{\section}[block]
+{\centering\Large\bf\bfseries}
+{\thesection.}{0.5em}{}
+
+\titleformat{\subsection}[block]
+{\centering\bf\bfseries}
+{\thesection.}{0.5em}{}
+
+\setcounter{secnumdepth}{1}
+
+\makeatletter
+\let\latexl@section\l@section
+\def\l@section#1#2{\begingroup\let\numberline\@gobble\latexl@section{#1}{#2}\endgroup}
+\makeatother
+
+\title{\textsc{Master Thesis}}
+\author{Konstantin Korotkiy\\New Economic School}
+\date{7 January 2018} %
+
+\begin{document}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+\newtheorem{example}{Example}
+\newtheorem*{proof*}{Proof}
+\newtheorem{corollary}{Corollary}
+\newtheorem{lemma}{Lemma}
+\newtheorem{as}{Assumption}
+\newtheorem{lm}{Lemma}
+\newtheorem{algorithm}{Algorithm}
+
+\begin{titlepage}
+\title{Sub-Optimal Pricing using Discrete-Choice Models (draft) }
+\author{Konstantin Korotkiy\thanks{I would like to thank Ivan Klenovsky, Pavel Mayorov and Petr Mayorov for valuable discussions. }}
+
+\date{\today}
+\maketitle
+\begin{abstract}
+Recently a variety of techniques have been introduced in order to find profit-maximizing prices in both online and offline retail settings.
+However, to the best of my knowledge, all of these techniques are developed either under assumption of exogenous price variation, or for a single product case, or both.
+Therefore, large offline retailers who sell product lines consisting of substitutable goods and who are unable to run price experiments on all of their goods in order to create exogenous price variation can find little guidance on optimal price setting in the extant literature.
+This paper provides a way of setting sub-optimal prices in this traditional retail setting using discrete choice models.
+REWRITE LATER
+\noindent  \\
+\vspace{0in}\\
+\noindent\textbf{Keywords:} Discrete-Choice Models, Optimal pricing, Cannibalization Effects, Revenue Management \\
+\vspace{0in}\\
+
+
+\bigskip
+\end{abstract}
+\setcounter{page}{0}
+\thispagestyle{empty}
+\end{titlepage}
+\pagebreak \newpage
+
+\newpage
+\tableofcontents
+\newpage
+
+%%%%%%
+%INTRO%
+%%%%%%
+
+\section{Introduction}\label{sect1}
+
+Recently a variety of techniques have been introduced in order to find profit-maximizing prices in both online and offline retail settings.
+However, to the best of my knowledge, all of these techniques are developed either under assumption of exogenous price variation, or for a single product case, or both.
+
+%exog assumtion
+\par Although online retailers can manipulate prices randomly to learn about demand which makes exogenous variation assumption reasonable, offline sellers often face high menu costs which makes price experiments quite costly \cite{anderson2015price}.
+Being combined with a large variety of products, menu costs could be so high as to constitute an almost insurmountable obstacle to price experiments. In turn, historical price variation could be driven by shifts in demand and therefore should not be treated as exogenous.
+For instance, taxi ride fares could be doubled in times of high demand, so simple regressing quantity on price would lead to positive slope of the demand curve.
+
+% single product assumption 
+\par Apart from exogenous price variation, the extant literature has primarily focused on a single product case (\cite{handel2015robust}, \cite{dube2017scalable}, \cite{misra2018dynamic}).
+Hence those offline retailers who are unable to vary prices on all of their products may find it profitable to select the best selling goods and to set new prices on them only using single-product-case algorithms.
+However, this strategy could lead to great losses due to its inability to perform any price discrimination and to detect cannibalization effects.
+In other words, optimizing prices one by one could result in far less profitable outcome than optimizing all prices simultaneously (at least when products are either complements or substitutes of each other).
+
+%problem
+\par Summing up, large offline retailers who sell product lines consisting of substitutable goods can find little guidance on optimal price setting in the extant literature.
+This paper provides a way of setting sub-optimal prices in this traditional retail setting using discrete choice models.
+We would not refer to the induced prices as to optimal since there is no evidence that they equal to unknown ex-post profit-maximizing prices (even asymptotically).
+However, in what follows I prove that the induced prices result in weakly larger profits while being compared to the old ones.
+
+%solution
+\par The main challenge in price optimization using discrete models in offline retail setting is our inability to observe the frequency of picking the outside option (which is not to buy any of goods presented in the product line).
+Without knowing the probability of not-to-buy event we could not estimate elasticity of the demand curve.
+However, it appears that there still is a way to find sub-optimal prices by estimating the lower bound of profit increase due to change in prices.
+Given such an estimate the logic is straightforward: if the lower bound of profit increase is positive then the change in prices is strictly profitable.
+
+%results
+\par My main results are the following:
+\begin{itemize}
+\item I show analytically that if the proposed algorithm predicts positive profit increase due to price change then this price change is indeed profitable (asymptotically).
+\item An experiment conducted in collaboration with KuchenLand, Russian offline retailer of kitchen appliances, showed that the proposed algorithm achieves 4\% higher profits.
+\end{itemize}
+
+
+%%%%%%
+%LITERATURE%
+%%%%%%
+\section{Related Literature}\label{sect2}
+
+%prices
+\par This paper is related to the literature on pricing and demand estimation in marketing, economics and operations research.
+In marketing and operations, the literature on pricing often assumes that retailers have a lot of information about the demand curve for each product.
+In some papers authors even assume the knowledge of the the demand curve per se (\cite{acquisti2005conditioning}, \cite{nair2007intertemporal}, \cite{akccay2010joint}), while some others assume the knowledge of the the demand curve up to few parameters (\cite{braden1994nonlinear}, \cite{bonatti2011menu}, \cite{biyalogorsky2014design}).
+However, these assumptions seem to be not really reasonable if the firm has no opportunity to conduct numerous price experiments due to high menu costs.
+The most recent literature also considers non-parametric estimates of the demand curve that do not require such restrictive assumptions (\cite{lei2014near}, \cite{misra2018dynamic}).
+One of the most distinctive papers here is the paper by \cite{misra2018dynamic}.
+In this paper, authors don't follow "learn then earn" design, but rather reformulate the problem in terms of dynamic optimization with the goal of maximizing "earning while learning".
+Nevertheless, menu costs are not introduced into this model.
+That is, cases where menu costs are so high as numerous price experiments are impossible (not-profitable) are not covered.
+Moreover, pricing of product lines consisting of substitutable goods has not been studied yet.
+Generally, simple "intuitive" pricing could easily outperform applying single-product pricing algorithms to such product lines as the latter strategy does not take into account price discrimination options.
+
+%DCM
+\par A second related literature exploits the possibilities of discrete choice models of consumer demand in marketing. 
+Researchers have used demand models in order to test theories of behavior (\cite{hendel2006measuring}, \cite{anderson2003effects}), to predict the response to the introduction of new goods and to forecast sales (\cite{chintagunta2011structural}).
+Recent extensions include models allowing purchases of several goods at once or "asymmetric switching between brands across different price tiers" (\cite{chintagunta2011structural}).
+Further, some empirical papers have attempted modeling the dynamic side of demand (\cite{erdem2005learning}, \cite{seiler2013impact}, \cite{hartmann2010retail}).
+However, rather surprisingly little attention have been paid to optimal pricing using discrete choice models.
+Existing literature considers the simple case when the frequency of choosing the outside option (not to buy any of goods presented in the product line) is observed (\cite{li2011pricing}, \cite{du2016optimal}).
+This assumption is reasonable for online retail setting but at the same time is almost unrealistic is the traditional offline retail case.
+Hence, the main idea of this paper is to combine optimal pricing and discrete choice models of consumer demand, contributing to both directions of literature mentioned above.
+
+%the rest of the paper
+\par The rest of the paper would be structured as follows. Section 3 provides some basic assumptions about data generating processes ... . Finally, Section 6 concludes.
+
+%%%%%
+%MODEL
+%%%%%
+
+\section{Sub-Optimal Pricing}
+\label{sect5}
+\subsection{Fixing "outside option" problem}
+
+%framework 
+Let's start with the standard discrete-choice model framework.
+Consider a retailer selling $N$ goods that are substitutes to each other.
+Let us index these goods by $i \in \mathcal{N} = \{1, \dots , N\}$ .
+Each costumer entering the store chooses one of these $N$ options or decides not to buy anything (which is the outside option).
+In this standard framework it is assumed that a costumer obtains the utility 
+
+\begin{equation*}
+u_i = v_i + \epsilon_i
+\end{equation*} 
+
+from purchasing good $i \in \mathcal{N} $, where $v_i$ is the expected part of the utility (which depends on the price of good $i$, on its quality etc) and $\epsilon_i$ is the stochastic part that stands for costumer's idiosyncratic preferences.
+Then a costumer chooses the item which brings her the maximum utility given that this utility is positive and chooses not to buy anything otherwise.
+
+\par In simple multinomial logit (MNL) choice model it is assumed that $\{ \epsilon_i \}_{i=1}^{N}$ are i.i.d. standard Gumbel random variables.
+Then the probability of item $i$ being chosen conditional on the probability of buying any of goods presented in the product line is given by
+
+\begin{equation}
+\label{eq:probs}
+p_i = \frac{exp(v_i)}{\sum_{j \in \mathcal{N}} exp(v_j)}
+\end{equation} 
+
+%simple problem
+\par If the frequency of choosing the outside option is observed, this option could be easily incorporated in set $\mathcal{N}$.
+Then the probability of choosing some element from $\mathcal{N}$ is equal to 1, so the induced probabilities equal to unconditional ones.
+In this case the sellers' pricing problem could be reformulated as a simple optimization problem: we want to maximize $\sum_i \pi_i p_i$ subject to some obvious constraints, where $\pi_i$ represents the profit for the seller if a costumer chooses to buy good $i$ (for details, see \cite{du2016optimal}).
+
+%could not estimate: explanation
+\par However, in offline retail setting the frequency of choosing the outside option is \textit{not} observed, so it appears that there is no way for consistent estimation of the optimal prices that are the solution of an optimization problem mentioned above.
+Let me provide some basic economic intuition behind this result.
+For example, let's assume that we want to lower the price on good 1 while keeping other prices fixed.
+Not surprisingly, the choice model would tell us that the conditional probability of purchase for good 1 will be higher after this price change.
+However, it is not clear whether this uplift in the conditional probability is due to "new" costumers (who would choose the outside options with previous prices) or due to "old" costumers (who would buy another good with previous prices).
+Therefore, the effect of this price change on profit is absolutely ambiguous.
+
+\par We approach this problem by estimating the \textit{lower bound} of the potential profit increase.
+Let us continue with our example: if the price of good 1 is lowered, then the minimum profit increase corresponds to the case when the uplift in the conditional probability of purchasing good 1 is associated with the inflow of "old customers" \textit{only}.
+Similarly, if the price of good 1 is raised, then the minimum profit increase corresponds to the case when the shrinkage in the conditional probability of purchasing good 1 is associated with costumers' switch from good 1 to outside option (i.e. not to other goods) \textit{only}.
+
+\subsection{Formal model}
+
+Let's parameterize $v_i$ in a usual way:
+\begin{equation*}
+v_i = f(\pi_i,\nu_i,\theta)
+\end{equation*} 
+
+where $\nu_i$ is $i^{th}$ product fixed effect (which encompasses information about product characteristics that are not to be optimized, i.e. color, quality etc), $\theta$ is a $q \times 1$ vector of parameters and $\pi_i$ is the price of $i^{th}$ product and $f:\mathbb{R}^{q+2} \rightarrow \mathbb{R}$.
+As usual, due to identification reasons, let $\sum \nu_i = 0$.
+Also let $\Phi(\pi,\nu, \theta)$ be the function that for each pair of vectors $(\pi,\nu)$ (which contain information about all product prices and fixed effects, respectively) and parameter vector $\theta$ returns a vector of conditional purchase probabilities: $\Phi: \mathbb{R}^{2N+q} \rightarrow \mathbb{R}^N$.
+
+%not necessarily MNL
+\par Note that $\Phi$ returns probabilities similar to $\ref{eq:probs}$ for MNL choice model.
+However, simple MNL model is built under rather strict and sometimes unrealistic assumptions (as an assumption of independence of irrelevant alternatives - IAA).
+Nevertheless, we can associate the output of $\Phi$ with the probabilities induced by more complex (and hopefully more realistic) models such as mixed logit or BLP models (see \cite{berry1995automobile}).
+Most importantly, this option allows us to use \textit{endogenous} price variation at the estimation step [see INSERT EXTENSIONS SECTION for details].
+
+%minimax
+\par As mentioned above, we will calculate the \textit{lower bound} of the potential profit increase due to change in prices.
+More precisely, we would call price vector $\pi$ sub-optimal if it maximizes the \textit{lower bound} of the potential profit increase.
+In fact, this strategy could be thought of as a minimax strategy (minimizing the maximum possible loss due to difference between our new prices and unknown profit-maximizing prices).
+
+%notations
+\par Let us also introduce some useful notations: let $\pi^0$ be the vector of current prices.
+Also let $g$ be the vector of size $N \times 1$ with $i^{th}$ input of $g$ being equal to $g_i = \mathbb{I}\{\pi_i \leq \pi_i^0\}$.
+Finally, let $c$ be the vector of costs for seller.
+
+%PROP1
+\begin{proposition}\label{proposition:1}
+
+The lower bound (LB) of the potential profit increase due to switch from price vector $\pi^0$ to price vector $\pi \in \Pi$ is proportional to
+
+\begin{equation*}
+LB' = \frac{ \Phi(\pi^0,\nu, \theta)' g}{\Phi(\pi + (\pi^0 - \pi) \circ g,\nu, \theta)' g} \Phi(\pi,\nu, \theta)' (\pi-c) - \Phi(\pi^0,\nu, \theta)' (\pi^0 -c)
+\end{equation*}
+
+where $\circ$ stands for Hadamard (element-wise) product, constant of proportionality is positive and $\Pi = \{\pi \in  \mathbb{R}^N \mid \norm{g} \neq 0 \}$.
+
+\end{proposition}
+\begin{proof}
+see the \hyperref[sect7]{Appendix}.
+\end{proof}
+
+Note that $\Pi$ is closed but it is not a compact.
+Thus, $\underset{\pi}{Argmax} \: LB'(\pi)$ might be empty.
+To avoid this technical problem (note that $LB'$ is differentiable not at every point of $\Pi$) let's assume that we are only interested in potential prices in range $[\underline{\pi} ; \overline{\pi}]$.
+For instance, zero is a good candidate for $\underline{\pi}$, while $\overline{\pi}$ could be chosen by industry experts.
+Now, let's consider a set of potential prices:
+
+
+\begin{equation*}
+\Pi' = \{\pi \in  \mathbb{R}^N \mid \norm{g} \neq 0 , \pi_i \in [\underline{\pi} ; \overline{\pi}] \:  for \:  \forall i \in \mathcal{N} \}
+\end{equation*}
+
+Now, $\Pi'$ is a compact, and since $LB'(\pi)$ is continuous on $\Pi'$ then $\underset{\pi}{Argmax} \: LB'(\pi)$  is not empty.
+Also note that $\Pi'$ is actually not really very restrictive set of prices: the only real constraint is the inability to increase all prices at the same time.
+
+%PROP2
+\begin{proposition}\label{proposition:2}
+Elements of $\underset{\pi \in \Pi'}{Argmax} \: LB'(\pi)$ are sub-optimal price vectors, i.e. switching to these prices weakly increases the profit.
+\end{proposition}
+\begin{proof}
+Note that $\pi^0 \in \Pi'$ and that $LB'(\pi^0)=0$ so $LB(\pi^0)=0$. Then for $\forall \pi^{opt} \in \underset{\pi \in \Pi'}{Argmax} \: LB'(\pi)$ it must be true that $LB(\pi^{opt}) \geq LB(\pi^0)=0$ ($\underset{\pi \in \Pi'}{Argmax} \: LB'(\pi) = \underset{\pi \in \Pi'}{Argmax} \: LB(\pi)$ because $LB$ and $LB'$ are proportional), so each $\pi^{opt}$ weakly increases the profit.
+\end{proof}
+
+%%%%%
+%ESTIMATION
+%%%%%
+\section{Estimation}
+\textit{in progress}
+
+$(\hat{\nu}, \hat{\theta})$ are Maximum Likelihood estimates as usual.
+
+
+\begin{equation*}
+\reallywidehat{LB'} = \frac{ \Phi(\pi^0,\hat{\nu}, \hat{\theta})' g}{\Phi(\pi + (\pi^0 - \pi) \circ g,\hat{\nu},\hat{ \theta})' g} \Phi(\pi,\hat{\nu}, \hat{\theta})' (\pi-c) - \Phi(\pi^0,\hat{\nu}, \hat{\theta})' (\pi^0 -c )
+\end{equation*}
+
+\begin{equation*}
+\underset{\pi \in \Pi'}{Argmax} \: \reallywidehat{LB'}(\pi)
+\end{equation*}
+
++ bootstrap inference (if needed)
+
+
+%%%%%
+%SIMPULATION
+%%%%%
+
+\section{Simulation study}
+
+Let's consider some toy examples which would allow us to understand to what extent sub-optimal prices proposed above coincide with the simple economic intuition.
+
+\subsection{Cannibalization effect}
+
+Suppose that there are two products.
+The first one costs \$50 while the second one costs \$90.
+However, the current prices are \$100 for both products.
+Also suppose that fixed effects are equal (i.e. products are very much similar to each other) and that $f(\pi_i,\nu_i,\theta)$ is linear in $\pi_i$ (in fact, the latter assumption is not really important).
+
+\par Then it is evident that cannibalization effect is present: conditional probabilities of purchase are obviously equal for these 2 items.
+However, the seller earns only \$10 on the second one and \$50 on the first one.
+Now consider Figure \ref{fig:figg} which shows the graph of $LB'$.
+
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.49\textwidth}
+\centering
+\includegraphics[width = \textwidth]{3d.png}
+\caption{$LB'$ plot}
+\label{fig:left}
+\end{subfigure}
+\begin{subfigure}{0.49\textwidth}
+\centering
+\includegraphics[width = \textwidth]{contour.png}
+\caption{$LB'$ contour plot}
+\label{fig:right}
+\end{subfigure}
+\caption{Values of the objective function}
+\label{fig:figg}
+\end{figure}
+
+As we can see, the model suggests to decrease the price for more profitable item without changing a price for \$90 item.
+In fact, this is a very intuitive move: this would not deter "old" customers, but the share of \$50 item would be much higher.
+To be precise, the model suggests to charge \$96.4 for a \$50 item and \$100 for a \$90 item. 
+
+
+\subsection{Economy \& business class seats: price discrimination}
+Suppose that the seller has economy and business class seats in her aircraft.
+Economy class seat price is \$20 while business class seat price is \$25.
+Assume that the cost of a economy class seat for the seller is \$10 and business class seat costs \$15. So, the markup is equal for both classes.
+However, the fixed effect (the proxy for the quality) for economy class is -2.5 and 2.5 for business class.
+In other words, consumers like business class seats a little bit more.
+Then it seems like business class seats are underpriced.
+
+Now consider Figure \ref{fig:figg1} which shows the graph of $LB'$.
+
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.49\textwidth}
+\centering
+\includegraphics[width = \textwidth]{3d_eb.png}
+\caption{$LB'$ plot}
+\label{fig:left}
+\end{subfigure}
+\begin{subfigure}{0.49\textwidth}
+\centering
+\includegraphics[width = \textwidth]{contour_eb.png}
+\caption{$LB'$ contour plot}
+\label{fig:right}
+\end{subfigure}
+\caption{Values of the objective function}
+\label{fig:figg1}
+\end{figure}
+
+In fact, the model suggests to increase the price of the business class seat up to \$25.4 while keeping the price of the economy class seat fixed.
+
+\subsection{Overpriced item}
+\textit{in progress}
+
+\newpage
+\section{Empirical example at KuchenLand}
+\textit{in progress}
+%By independent lines we mean that any two goods from different product lines are neither complements nor substitutes (this assumption will be relaxed in Section [INSERT EXTENSIONS SECTION]). Each costumer enters the store knowing which categories she will search in advance. Without loss of generality, let us consider just one product line (since pricing of one category would not affect costumer's decisions for another one in our framework).
+
+\section{Extensions}
+\textit{in progress}
+\section{Conclusion}
+\textit{in progress}
+
+	
+\newpage
+\section{Appendix}\label{sect7}
+\setcounter{proposition}{0}
+
+
+
+\begin{proposition}\label{proposition:1}
+
+The lower bound (LB) of the potential profit increase due to switch from price vector $\pi^0$ to price vector $\pi \in \Pi$ is proportional to
+
+\begin{equation*}
+LB' = \frac{ \Phi(\pi^0,\nu, \theta)' g}{\Phi(\pi^0 + (\pi - \pi^0) \circ g,\nu, \theta)' g} \Phi(\pi,\nu, \theta)' (\pi-c) - \Phi(\pi^0,\nu, \theta)' (\pi^0 -c)
+\end{equation*}
+
+where $\circ$ stands for Hadamard (element-wise) product, constant of proportionality is positive and $\Pi = \{\pi \in  \mathbb{R}^N \mid \norm{g} \neq 0 \}$.
+
+\end{proposition}
+\begin{proof}
+Let's consider three price vectors: $\pi^0$ (old prices), $\pi$ (new prices) and $\pi + (\pi^0 - \pi) \circ g$ (keeping old prices for goods for which new prices are not greater than the old ones, putting new prices for goods for which new prices are greater than the old ones).
+Let the corresponding probabilities of the outside option be $p_{zero}^0$, $p_{zero}$ and $p_{zero}^*$.
+
+\par Now note that
+\begin{equation}\label{eq:leq1}
+\Phi(\pi^0,\nu,\theta)'g(1-p_{zero}^0) \leq \Phi(\pi + (\pi^0 - \pi) \circ g,\nu,\theta)'g(1-p_{zero}^*)
+\end{equation}
+
+That is, if we push some prices up, the unconditional probability of purchase for each good with unchanged price would not go down.
+At the same time,
+
+\begin{equation}\label{eq:leq2}
+\Phi(\pi + (\pi^0 - \pi) \circ g,\nu,\theta)'g(1-p_{zero}^*) \leq \Phi(\pi + (\pi^0 - \pi) \circ g,\nu,\theta)'g(1-p_{zero}) 
+\end{equation}
+
+because $1-p_{zero}^* \leq 1-p_{zero}$ since each element of price vector $\pi$ is weakly smaller than the corresponding element in $\pi + (\pi^0 - \pi) \circ g$.
+
+Combining \ref{eq:leq1} and \ref{eq:leq2} leads to 
+
+\begin{equation*}
+1-p_{zero} \geq \frac{ \Phi(\pi^0,\nu, \theta)' g (1-p_{zero}^0)}{\Phi(\pi + (\pi^0 - \pi) \circ g,\nu, \theta)' g} 
+\end{equation*}
+
+Now, the potential profit increase is 
+
+\begin{equation*}
+P = \Phi(\pi,\nu,\theta)'(\pi-c)(1-p_{zero}) - \Phi(\pi^0,\nu,\theta)'(\pi^0-c)(1-p_{zero}^0) 
+\end{equation*}
+
+Then 
+
+\begin{equation*}
+P \geq (1-p_{zero}^0) \bigg[ \frac{ \Phi(\pi^0,\nu, \theta)' g }{\Phi(\pi + (\pi^0 - \pi) \circ g,\nu, \theta)' g}  \Phi(\pi,\nu,\theta)'(\pi-c) - \Phi(\pi^0,\nu,\theta)'(\pi^0-c) \bigg]
+\end{equation*}
+
+Thus denote
+
+\begin{equation*}
+LB = (1-p_{zero}^0) \bigg[ \frac{ \Phi(\pi^0,\nu, \theta)' g }{\Phi(\pi + (\pi^0 - \pi) \circ g,\nu, \theta)' g}  \Phi(\pi,\nu,\theta)'(\pi-c) - \Phi(\pi^0,\nu,\theta)'(\pi^0-c) \bigg]
+\end{equation*}
+
+and 
+
+\begin{equation*}
+LB' = \frac{ \Phi(\pi^0,\nu, \theta)' g }{\Phi(\pi + (\pi^0 - \pi) \circ g,\nu, \theta)' g}  \Phi(\pi,\nu,\theta)'(\pi-c) - \Phi(\pi^0,\nu,\theta)'(\pi^0-c)
+\end{equation*}
+
+and the result follows.
+Also note that the constant of proportionality is positive.
+
+\end{proof}
+
+\newpage
+\bibliography{bib_term}{}
+%\bibliographystyle{plain}
+\bibliographystyle{authordate1}
+
+\end{document}
